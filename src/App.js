@@ -5,9 +5,8 @@ import Board from './components/Board';
 function App() { // This returns HTML code
   return (
     <div className="App">
-      <header className="App-header">
-        <Board />
-      </header>
+      <button className="button">Start Game</button>
+      <Board />
     </div>
   );
 }
