@@ -1,10 +1,11 @@
 import React, {useState} from "react"; // ES6 js
 
-const BOARD_SIZE = 8;
 
-function Board () { // This is a class that extends the React.Component class
-    // This returns HTML code
- 
+function Board (props) { // This is a class that extends the React.Component class
+    const [boardSize, setBoardSize] = useState(parseInt(props.size)); // This is a hook that allows us to use state in a functional component
+    console.log("BOARD: ", boardSize);
+
+    
     function Square(props) {
         const [isActive, setIsActive] = useState(false);
         const squareClick = (event) => {
@@ -36,13 +37,21 @@ function Board () { // This is a class that extends the React.Component class
         );
     }
     
+    const changeBoardSize = (event) => {
+        if(event.key === "Enter" && event.target.value > 0 && event.target.value <= 20) {
+            console.log("ENTER PRESSED");
+            setBoardSize(event.target.value);
+
+        }
+      }
     
     // arrow func to make board
     const createBoard = () => {
+        console.log("CREATING BOARD");
         const board = [];
         let count = 0;
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            for (let j = 0; j < BOARD_SIZE; j++) {
+        for (let i = 0; i < boardSize; i++) {
+            for (let j = 0; j < boardSize; j++) {
                 if(i % 2 === 0) {
                     if((j % 2 === 0)) {
                         board.push(<Square id={count} backgroundColor="var(--white)"/>);
@@ -63,8 +72,11 @@ function Board () { // This is a class that extends the React.Component class
     }
 
     return (
-        <div className="board">
-            {createBoard()}
+        <div className="boardContainer">
+            <input className='input' type="number" placeholder="Board Size" title="Enter board size." onKeyUp={changeBoardSize}/>
+            <div className="board" size={props.size} style={{grid: `repeat(${boardSize}, 1fr) / repeat(${boardSize}, 1fr)`}}>
+                {createBoard()}
+            </div>
         </div>
     );
 }

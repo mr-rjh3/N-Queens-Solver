@@ -2,9 +2,11 @@
 import './App.css';
 import Board from './components/Board';
 
-const BOARD_SIZE = 8;
+let boardSize = 8;
 
 function App() { // This returns HTML code
+  
+        
         const findQueens = () => {
           // Find all the queens
           const collection = document.getElementsByClassName("hasQueen");
@@ -13,11 +15,16 @@ function App() { // This returns HTML code
             collection[i].firstChild.style.opacity = "0.6";
           }
         }
+        const changeBoardSize = (event) => {
+          if(event.key === "Enter") {
+            console.log("ENTER PRESSED");
+          }
+        }
         const clearBoard = () => {
           // Clear the board
           const collection = document.getElementsByClassName("hasQueen");
+          // console.log("REMOVING QUEENS: ", collection);
           for (let i = 0; i < collection.length; i++) {
-            console.log("REMOVING QUEEN: ", collection[i].id);
             collection[i].click();
           }
         }
@@ -31,9 +38,11 @@ function App() { // This returns HTML code
           // randomize the positions of the queens
           const queens = document.getElementsByClassName("input")[0].value;
           const queenSquares = document.getElementsByClassName("hasQueen").length;
-          console.log(queens);
+          const squares = document.getElementsByClassName("square").length;
+          boardSize = Math.sqrt(squares);
+          console.log("RANDBOARD: ", boardSize);
           // check if there is an input or if there are queens on the board currently, if there is an input we must make sure the input is not greater than the size of the board
-          if((queens > 0 || queenSquares > 0) && queens <= BOARD_SIZE * BOARD_SIZE) {
+          if((queens > 0 || queenSquares > 0) && queens <= boardSize * boardSize) {
             clearBoard();
             const squares = document.getElementsByClassName("square");
             const numSet = new Set();
@@ -42,20 +51,20 @@ function App() { // This returns HTML code
               console.log("NO INPUT RANDOMIZING BOARD");
 
               while(numSet.size < queenSquares) {
-                numSet.add(Math.floor(Math.random() * (BOARD_SIZE * BOARD_SIZE)));
+                numSet.add(Math.floor(Math.random() * (boardSize * boardSize)));
               }
             }
             // otherwise randomize the number of queens the user entered
             else if(queens > 0) { 
               console.log("INPUT RANDOMIZING ", queens, " QUEENS");
               while(numSet.size < queens) {
-                numSet.add(Math.floor(Math.random() * (BOARD_SIZE * BOARD_SIZE)));
+                numSet.add(Math.floor(Math.random() * (boardSize * boardSize)));
               }
             }
             const nums = Array.from(numSet);
             // console.log(nums.length);
+            console.log("RANDS: ", nums);
             for (let i = 0; i < nums.length; i++) {
-                console.log("RANDS: ", nums[i]);
                 squares[nums[i]].click();
             }
           }
@@ -77,10 +86,11 @@ function App() { // This returns HTML code
       <header className="App-header">
         <button className="button" onClick={clearBoard}>Clear Board</button>
         <button className="button" onClick={findQueens}>Solve!</button>
-        <input className='input' type="number" placeholder="# of Queens" title="Enter number of queens to randomize." onKeyDown={inputEnter}/>
+        <input className='input' type="number" placeholder="# of Queens" title="Enter number of queens to randomize." onKeyUp={inputEnter}/>
         <button className="button" onClick={randPositions}>Randomize</button>
+        {/* <input className='input' type="number" placeholder="Board Size" title="Enter board size." onKeyDown={changeBoardSize}/> */}
       </header>
-      <Board />
+      <Board size={boardSize}/>
     </div>
   );
 }
