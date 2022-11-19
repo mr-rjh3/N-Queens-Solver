@@ -2,6 +2,7 @@
   --white : rgb(240,217,181);
   --black : rgb(181,136,99);
   --red : rgb(235, 97, 80);
+  --green : rgb(97, 235, 80);
 
   background-color: #282c34;
 }
@@ -42,7 +43,7 @@
 }
  .input:hover, .input:focus {
   border: 2px solid var(--white);
-  scale: 1.02;
+  scale: 1.01;
 }
 
 .button{
@@ -87,9 +88,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: all 0.1s ease;
+  /* opacity: 0; */
+  /* scale: 0; */
+  transition: all 0.2s ease;
 }
+
 
 .highlight{
   position: absolute;
@@ -97,8 +100,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0 ;
+  opacity: 0;
   background-color: var(--red);
-  transition: all 0.1s ease;
+  transition: all 0.2s ease;
 }
 

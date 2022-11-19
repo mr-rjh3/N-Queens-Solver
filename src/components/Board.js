@@ -13,7 +13,10 @@ function Board () { // This is a class that extends the React.Component class
             if(event.target.className === "square " || event.target.className === "square hasQueen") {
                 highlight = event.target.childNodes[0];
             }
-            if(event.target.className === "image") {
+            else if(event.target.className === "highlight") {
+                highlight = event.target;
+            }
+            else if(event.target.className === "image") {
                 highlight = event.target.parentNode.childNodes[0];
             }
             // console.log(highlight);
@@ -28,7 +31,7 @@ function Board () { // This is a class that extends the React.Component class
             <button id = {props.id} className={`square ${isActive ? 'hasQueen' : ''}`}  style={{backgroundColor: props.backgroundColor,}} 
                                         onClick={squareClick}> 
                 <div className="highlight"/>
-                <img className="image" src="https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg" style={{opacity: isActive ? '1' : '0'}}/>
+                <img className="image" src="https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg" style={{scale: isActive ? '1' : '0'}}/>
             </button>
         );
     }
