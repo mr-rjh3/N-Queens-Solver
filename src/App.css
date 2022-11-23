@@ -12,7 +12,10 @@
   flex-direction: column;
   align-items: center; 
 }
-.App-header {
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
   padding: 0.3rem;
 }
 .boardContainer{
@@ -25,13 +28,23 @@
 .board {
   padding: 0.3rem;
   display: grid;
-  width: 90vh;
+  width: 85vh;
   aspect-ratio: 1;
+}
+@media (max-width: 50em) {
+  .board {
+    width: 50vh;
+  }
+  .buttonContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
 }
 
 .input {
   font-size: 1.3rem;
-  padding : 0.3rem;
+  padding: 0.3rem;
   text-align: center;
   border: 2px solid var(--black);
   border-radius: 5px;
@@ -52,7 +65,7 @@
 }
 
 .button{
-  cursor: pointer;;
+  cursor: pointer;
   background-color: var(--black);
   color: var(--white);
   border: 1px solid var(--white);

@@ -38,7 +38,7 @@ function Board (props) { // This is a class that extends the React.Component cla
     }
     
     const changeBoardSize = (event) => {
-        if(event.key === "Enter" && event.target.value > 0 && event.target.value <= 20) {
+        if(event.key === "Enter" && event.target.value > 0 && event.target.value <= 100) {
             console.log("ENTER PRESSED");
             setBoardSize(event.target.value);
 
@@ -74,7 +74,7 @@ function Board (props) { // This is a class that extends the React.Component cla
     return (
         <div className="boardContainer">
             <input className='input' type="number" placeholder="Board Size" title="Enter board size." onKeyUp={changeBoardSize}/>
-            <div className="board" size={props.size} style={{grid: `repeat(${boardSize}, 1fr) / repeat(${boardSize}, 1fr)`}}>
+            <div className="board" size={props.size} style={{grid: `repeat(${boardSize}, minmax(0, 1fr)) / repeat(${boardSize}, minmax(0, 1fr))`}}>
                 {createBoard()}
             </div>
         </div>

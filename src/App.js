@@ -83,7 +83,7 @@ function App() { // This returns HTML code
             
   return (
     <div className="App">
-      <header className="App-header">
+      <header className="buttonContainer">
         <button className="button" onClick={clearBoard}>Clear Board</button>
         <button className="button" onClick={findQueens}>Solve!</button>
         <input className='input' type="number" placeholder="# of Queens" title="Enter number of queens to randomize." onKeyUp={inputEnter}/>
