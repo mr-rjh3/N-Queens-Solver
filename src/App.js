@@ -10,35 +10,53 @@ function App() { // This returns HTML code
         const findQueens = () => {
           // Find all the queens
           const collection = document.getElementsByClassName("hasQueen");
+          console.log("NO QUEENS FOUND: ", collection.length);
+          // TODO: if there are no queens on the boards however the input queens has a value greater than 0 then allow the program to find the best possible places for the queens
+          
+          // if(collection.length === 0) {
+          //   console.log("NO QUEENS FOUND");
+          //   if(document.getElementsByClassName("input")[0].value > 0) {
+          //     console.log("INPUT VALUE IS GREATER THAN 0");
+          //     randPositions();
+          //   }
+          // }
+
+          // Find all the queens and their positions  
           for (let i = 0; i < collection.length; i++) {
             console.log("FOUND QUEEN AT: ", collection[i].id);
             collection[i].firstChild.style.opacity = "0.6";
           }
+          
+
+          
+
+          // TODO: Run the backend code that solves the n-queens problem here
+
         }
-        const changeBoardSize = (event) => {
-          if(event.key === "Enter") {
-            console.log("ENTER PRESSED");
-          }
-        }
+        
         const clearBoard = () => {
           // Clear the board
           const collection = document.getElementsByClassName("hasQueen");
           // console.log("REMOVING QUEENS: ", collection);
+          // Go through each queen and remove it by clicking it
           for (let i = 0; i < collection.length; i++) {
             collection[i].click();
           }
         }
+
         const inputEnter = (event) => {
           if(event.key === "Enter") {
             console.log("ENTER PRESSED");
             randPositions();
           }
         }
+
         const randPositions = (event) => {
           // randomize the positions of the queens
           const queens = document.getElementsByClassName("input")[0].value;
           const queenSquares = document.getElementsByClassName("hasQueen").length;
           const squares = document.getElementsByClassName("square").length;
+
           boardSize = Math.sqrt(squares);
           console.log("RANDBOARD: ", boardSize);
           // check if there is an input or if there are queens on the board currently, if there is an input we must make sure the input is not greater than the size of the board

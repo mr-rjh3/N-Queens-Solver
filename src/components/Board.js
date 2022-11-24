@@ -32,7 +32,7 @@ function Board (props) { // This is a class that extends the React.Component cla
             <button id = {props.id} className={`square ${isActive ? 'hasQueen' : ''}`}  style={{backgroundColor: props.backgroundColor,}} 
                                         onClick={squareClick}> 
                 <div className="highlight"/>
-                <img className="image" src="https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg" style={{scale: isActive ? '1' : '0'}}/>
+                <img className="image" src="https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg" alt="" style={{scale: isActive ? '1' : '0'}}/>
             </button>
         );
     }
@@ -43,6 +43,8 @@ function Board (props) { // This is a class that extends the React.Component cla
             setBoardSize(event.target.value);
 
         }
+        // TODO: allow larger boards to be entered but do not change the visual board size it will only be used for the backend (display a message saying the board is too large)
+        
       }
     
     // arrow func to make board
