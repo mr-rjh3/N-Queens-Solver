@@ -19,11 +19,81 @@
   padding: 0.3rem;
 }
 .boardContainer{
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
+  display: grid;
+  grid-template-areas: 
+    "input input input input input"
+    "maxLeft left board right maxRight"; 
+  grid-template-columns: 2em 2em 1fr 2em 2em;
+  grid-template-rows: 2.5em 1fr;
+  grid-gap: 0.3rem;
   padding: 0.3rem;
 }
+
+.maxLeft button,
+.maxRight button,
+.leftArrow button,
+.rightArrow button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  background-color: var(--black);
+  color: var(--white);
+  border: 1px solid var(--white);
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 1.5em;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.1s ease;
+}
+.maxLeft button:disabled,
+.maxRight button:disabled,
+.leftArrow button:disabled,
+.rightArrow button:disabled {
+  scale: 0;
+}
+.maxLeft button:hover,
+.maxRight button:hover,
+.leftArrow button:hover,
+.rightArrow button:hover {
+  background-color: var(--white);
+  color: var(--black);
+  border: 1px solid var(--black);
+  scale: 1.02;
+}
+
+.leftArrow{
+  content: "&#60;";
+  grid-area: left;
+  position: relative;
+  height: 100%;
+}
+.rightArrow{
+  content: "&#62;";
+  grid-area: right;
+  position: relative;
+  height: 100%;
+}
+.maxLeft {
+  content: "&#60;&#60;";
+  grid-area: maxLeft;
+  position: relative;
+  height: 100%;
+}
+.maxRight {
+  content: "&#62;&#62;";
+  grid-area: maxRight;
+  position: relative;
+  height: 100%;
+}
+
+.input{
+  grid-area: input;
+  margin: auto;
+}
+
 
 .board {
   padding: 0.3rem;
@@ -42,7 +112,7 @@
   }
 }
 
-.input {
+input {
   font-size: 1.3rem;
   padding: 0.3rem;
   text-align: center;
@@ -53,13 +123,13 @@
   color: var(--white);
   transition: all 0.1s ease;
 }
-.input::-webkit-inner-spin-button, 
-.input::-webkit-outer-spin-button { 
+input::-webkit-inner-spin-button, 
+input::-webkit-outer-spin-button { 
   -webkit-appearance: none;
   -moz-appearance: none;
        appearance: none;
 }
- .input:hover, .input:focus {
+ input:hover, input:focus {
   border: 2px solid var(--white);
   scale: 1.01;
 }
