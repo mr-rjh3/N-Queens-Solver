@@ -182,9 +182,10 @@ export default class CSP {
   }
 
   getConflicts(queen) {
-    console.log("CSP: GETTING CONFLICTS: ", queen);
     var conflicts = [];
     for (let j = 0; j < queen.boardSize; j++) { // loops through one column
+      var diagonals = {ul: false, ur: false, dl: false, dr: false};
+      var rows = {left: false, right: false};
       var conflict = 0;
 
       // loops through all of the queens
@@ -195,11 +196,37 @@ export default class CSP {
 
         if (this.queens[q].y == j) { // in same row
           if (this.queens[q].x !== queen.x) { // if not the same queen
-            conflict++;
+            if (this.queens[q].x < queen.x) {
+              if (!rows.left) {
+                conflict++;
+                rows.left = true;
+              }
+            } else if (this.queens[q].x > queen.x) {
+              if (!rows.right) {
+                conflict++;
+                rows.right = true;
+              }
+            }
           }
-        } else if (queen.x !== this.queens[q].x && j !== this.queens[q].y) { // if not in same row or column
-          if (Math.abs(queen.x - this.queens[q].x) === Math.abs(j - this.queens[q].y)) { // if in same diagonal
+        } 
+        
+        if (queen.x !== this.queens[q].x && j !== this.queens[q].y) { // if not in same row or column
+          if (!diagonals.ul && queen.x - this.queens[q].x === j - this.queens[q].y) // up and left
+          {
             conflict++;
+            diagonals.ul = true;
+          } else if (!diagonals.ur && this.queens[q].x - queen.x === j - this.queens[q].y) // up and right
+          {
+            conflict++;
+            diagonals.ur = true;
+          } else if (!diagonals.dl && queen.x - this.queens[q].x === this.queens[q].y - j) // down and left
+          {
+            conflict++;
+            diagonals.dl = true;
+          } else if (!diagonals.dr && this.queens[q].x - queen.x === this.queens[q].y - j) // down and right
+          {
+            conflict++;
+            diagonals.dr = true;
           }
         }
       }
