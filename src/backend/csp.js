@@ -5,10 +5,11 @@ export default class CSP {
 
     this.queens = [];
     this.conflicts = [];
+    this.maxSteps = boardSize*boardSize*boardSize;
 
     console.log("CSP: CHECK BOARD QUEENS: ");
+    var visitedColumns = [];
     if (queenPositions && queenPositions.length > 0) {
-      var visitedColumns = [];
       queenPositions.forEach((position) => {
         this.queens.push(new Queen(position, boardSize, true));
         visitedColumns.push(position.x);
@@ -24,18 +25,12 @@ export default class CSP {
       }
     }
 
-    // check if board is filled
-    console.log("CSP: CHECK BOARD FILLED: ");
-    if (queenPositions.length === boardSize) {
-      // check if the board is solved
-      this.solved = this.checkSolved();
-      if (this.solved) {
-        return;
-      }
+    for (let queen of this.queens) {
+      var conflicts = this.getConflicts(queen);
+      if (conflicts[queen.y] > 0) throw new Error("There are conflicts in the initial board");
     }
     
     // assign the remaining queens to columns
-    //TODO breaks with no queens
     console.log("CSP: ASSIGN QUEENS TO COLUMNS: ");
     for (let i = 0; i < boardSize; i++) {
       if (!visitedColumns.includes(i)) {
@@ -103,59 +98,82 @@ export default class CSP {
     for(const queen of newQueens) {
       console.log("CSP: QUEENS ASSIGNED AFTER FOR: ",queen);
     }
+
+    // sort the queens left to right for simplicity
+    this.queens.sort((q1, q2) => {
+      if (q1.x < q2.x) {
+        return -1;
+      } else if (q1.x > q2.x) {
+        return 1;
+      }
+      return 0;
+    });
     
     // min conflicts algorithm
-    const MAX_STEPS = 10;
-    let states = [this.getState()];
-    for (let i = 0; i < MAX_STEPS; i++) {
-      console.log("CSP: SOLVING: ", i, " of ", MAX_STEPS, " steps");   
+    var states = [this.getState()];
+    for (let i = 0; i < this.maxSteps; i++) {
+      console.log("CSP: SOLVING: ", i, " of ", this.maxSteps, " steps");   
   
-      let {queen, conflicts, solved} = this.selectQueen();
+      var {queen, conflicts, solved} = this.selectQueen();
+      states.push(this.getState(queen, conflicts));
       if (solved) {
-        return;
+        // states.push(this.getState(queen));
+        return {states: states, solved: solved};
       }
-      console.log("CSPP: SELECTED QUEEN ", queen, conflicts);
-      let minConflictIndex = this.minConflicts(conflicts);
+      console.log("SAMSON REPLACE: SELECTED QUEEN FROM ", queen, conflicts);
+      conflicts[queen.y] = queen.boardSize + 1;
+      var minConflictIndex = this.minConflicts(conflicts);
+      console.log("SAMSON REPLACE: SELECTED QUEEN TO ", minConflictIndex);
 
       queen.y = minConflictIndex; // COULD EXPLODE
-      states.push(this.getState(minConflictIndex, conflicts));
       console.log(states);
     }
 
-    return states; // TODO CHECK IF RAN OUT OF STEPS
+    return {states: states, solved: this.isSolved()}; // TODO CHECK IF RAN OUT OF STEPS
   }
 
   selectQueen() {
     // select a conflicting queen randomly
     
-    let unvisitedQueens = [...this.queens];
+    var unvisitedQueens = [...this.queens];
     console.log("CSP: SELECTING QUEEN ", unvisitedQueens.length, this.queens.length);
-    let randVal = Math.floor(Math.random() * unvisitedQueens.length);
-    let queen = unvisitedQueens[randVal];
+    var randVal = Math.floor(Math.random() * unvisitedQueens.length);
+    var queen = unvisitedQueens[randVal];
     unvisitedQueens.splice(randVal, 1);
 
-    let conflicts = this.getConflicts(queen);
-    let solved = false;
-    while (queen.static || conflicts.length === 0) {
+    var conflicts = this.getConflicts(queen);
+    var solved = false;
+    console.log('currentqueensconflics:',conflicts[queen.y])
+    while (queen.static || conflicts[queen.y] === 0) {
       randVal = Math.floor(Math.random() * unvisitedQueens.length);
       queen = unvisitedQueens[randVal];
       unvisitedQueens.splice(randVal, 1);
       conflicts = this.getConflicts(queen);
       // console.log("CSP: WHILE QUEEN AFTER ",queen, conflicts, unvisitedQueens, this.queens.length);
 
-      if (unvisitedQueens.length === 0) {
+      if (this.isSolved()) {
         solved = true;
+        conflicts = null;
         break;
       }
     }
     return {queen: queen, conflicts: conflicts, solved: solved};
   }
 
+  isSolved() {
+    var totalConflicts = 0;
+    for (let i = 0; i < this.queens.length; i++) {
+      totalConflicts += this.getConflicts(this.queens[i])[this.queens[i].y];
+    }
+    return totalConflicts === 0;
+  }
+
   minConflicts(conflicts) {
-    let minConflict = conflicts[0];
-    let minIndex = 0;
+    var minConflict = conflicts[0];
+    var minIndex = 0;
     for (let i = 0; i < conflicts.length; i++) {
-      if (conflicts[i].length < minConflict.length) {
+      if (conflicts[i] < minConflict) {
+        console.log('SAMSON SETTING MIN TO ', minIndex, minConflict);
         minConflict = conflicts[i];
         minIndex = i;
       }
@@ -165,76 +183,48 @@ export default class CSP {
 
   getConflicts(queen) {
     console.log("CSP: GETTING CONFLICTS: ", queen);
-    let conflicts = [];
+    var conflicts = [];
     for (let j = 0; j < queen.boardSize; j++) { // loops through one column
-      let conflict = 0;
+      var conflict = 0;
 
       // loops through all of the queens
       for (let q = 0; q < this.queens.length; q++) {
-        if (!this.queens[q].y) { // if value isn't set
+        if (this.queens[q].y === null) { // if value isn't set
           continue;
         }
 
-        if (q.y === j) { // in same row
-          conflict++;
+        if (this.queens[q].y == j) { // in same row
+          if (this.queens[q].x !== queen.x) { // if not the same queen
+            conflict++;
+          }
         } else if (queen.x !== this.queens[q].x && j !== this.queens[q].y) { // if not in same row or column
           if (Math.abs(queen.x - this.queens[q].x) === Math.abs(j - this.queens[q].y)) { // if in same diagonal
             conflict++;
           }
         }
       }
-
       conflicts.push(conflict);
     }
+    console.log("SAM: CONFLICTS: ", conflicts)
     return conflicts;
   }
 
-  getState(conflictIndex=null, conflicts=null) {
+  getState(masterQueen=null, conflicts=null) {
     // get the state of the board
-    this.queens.sort((q1, q2) => {
-      if (q1.x < q2.x) {
-        return -1;
-      } else if (q1.x > q2.x) {
-        return 1;
-      }
-      return 0;
-    });
-    let state = [];
+    if (conflicts) var conf = [...conflicts];
+    console.log("fuck", masterQueen, conflicts);
+    var state = [];
     for(const queen of this.queens) {
       console.log("CSP: QUEEN IN STATE: ", queen.y);
-      if (conflictIndex && queen.x === conflictIndex) {
-        conflicts[queen.y] = null;
-        state.push(conflicts);
+      if (masterQueen && queen === masterQueen && conf) {
+        conf[queen.y] = null;
+        state.push(conf);
       } else {
         state.push(queen.y);
       }
     }
 
     return state
-  }
-
-  /**
-   * Function that checks if the current state of the board is a solution.
-   */
-  checkSolved() {
-    var solved = true;
-    this.queens.forEach((queen) => {
-      if (this.conflicts.length > 0) {
-        solved = false;
-      }
-    });
-    return solved;
-  }
-  
-  /**
-   * Function that updates this.conflicts with the conflicting queens of the current state of the board.
-   */
-  updateConflicts() {
-    
-  }
-  
-  minConflicts() {
-    
   }
 }
 

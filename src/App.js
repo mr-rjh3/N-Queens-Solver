@@ -72,10 +72,18 @@ function App() { // This returns HTML code
           // console.log("STATES: ", states);
           console.log("APP: Queen positions: ", queenPositions);
 
-          const csp = new CSP(queenPositions, boardSize);
+          try {
+            const csp = new CSP(queenPositions, boardSize);
+            var {states, solved} = csp.solve();
+            console.log('endsolve', solved)
+            if (!solved) alert("FATUIGED");
+            setStates(states);
+          } catch (error) {
+            console.log(error);
+            alert(error);
+          }
           console.log("APP: BEFORE MIN CONFLICTS: ");
 
-          setStates(csp.solve());
 
           // populate the states array with random values based on the board size
           // let tempStates = [];
