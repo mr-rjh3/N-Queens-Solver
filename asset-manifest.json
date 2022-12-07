@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/N-Queens-Solver/static/css/main.36d18e88.css",
-    "main.js": "/N-Queens-Solver/static/js/main.f3fd512e.js",
+    "main.css": "/N-Queens-Solver/static/css/main.485ecd9c.css",
+    "main.js": "/N-Queens-Solver/static/js/main.dd3cfd37.js",
     "static/js/787.cda612ba.chunk.js": "/N-Queens-Solver/static/js/787.cda612ba.chunk.js",
     "index.html": "/N-Queens-Solver/index.html",
-    "main.36d18e88.css.map": "/N-Queens-Solver/static/css/main.36d18e88.css.map",
-    "main.f3fd512e.js.map": "/N-Queens-Solver/static/js/main.f3fd512e.js.map",
+    "main.485ecd9c.css.map": "/N-Queens-Solver/static/css/main.485ecd9c.css.map",
+    "main.dd3cfd37.js.map": "/N-Queens-Solver/static/js/main.dd3cfd37.js.map",
     "787.cda612ba.chunk.js.map": "/N-Queens-Solver/static/js/787.cda612ba.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.36d18e88.css",
-    "static/js/main.f3fd512e.js"
+    "static/css/main.485ecd9c.css",
+    "static/js/main.dd3cfd37.js"
   ]
 }
