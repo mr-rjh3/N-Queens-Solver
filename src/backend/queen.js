@@ -12,11 +12,11 @@ export class Queen {
    * 
    * @param {Object of x,y} position col and row position of the queen, null if not placed.
    */
-  constructor (position=null, boardSize, static){
+  constructor (position=null, boardSize, isStatic){
     this.x = position.x;
     this.y = position.y;
     this.boardSize = boardSize;
-    this.static = static;
+    this.static = isStatic;
 
     if (this.y) {
       this.domain = 1<<this.y;
@@ -49,10 +49,15 @@ export class Queen {
       this.y = Math.log2(this.domain);
       return true;
     }
-
+    
+    // console.log("Queen REVISE DOMAIN: ")
     return false;
   }
 
+  assignValue(i) {
+    this.y = i;
+    console.log("CSP: ASSIGN RANDOM VALUE: ", this);
+  } 
   setBit(bit) {
     this.domain |= (1<<bit);
   }
