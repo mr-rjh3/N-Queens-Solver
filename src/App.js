@@ -18,7 +18,29 @@ function App() { // This returns HTML code
             console.log("NO STATES FOUND");
           }
           else {
-            console.log("STATES: ", states);
+            const squares = document.getElementsByClassName("square");
+            for(let i = 0; i < states[0].length; i++) {
+              if(states[0][i] != null) {
+                  if(typeof states[0][i] == "number") { // if the element is a number, then draw the queen on the square in ith column
+                      console.log("NUMBER: ", states[0][i]);
+                      // TODO: Squares useState "hasQueen" is not updated
+                      squares[states[0][i] * boardSize + i].classList.add("hasQueen");
+                  }
+                  else{ // if the element is an array, draw all the confilct numbers on the squares in the ith column
+                      console.log("ARRAY: ", states[0][i]);
+                      for(let j = 0; j < states[0][i].length; j++) {
+                          if(states[0][i][j] != null){
+                              console.log(i+(boardSize*j));
+                              squares[i+(boardSize*j)].querySelector('.conflict').innerText = states[0][i][j];
+                          }
+                          else{
+                              squares[i+(boardSize*j)].classList.add("hasQueen");
+  
+                          }
+                      }
+                  }
+              }
+          }
           }
         }, [states]);
 
@@ -46,7 +68,7 @@ function App() { // This returns HTML code
             setButtonsEnabled(true);
         }
         
-        const findQueens = () => {
+        const solve = () => {
           // Find all the queens
           const collection = document.getElementsByClassName("hasQueen");
           // TODO: if there are no queens on the boards however the input queens has a value greater than 0 then allow the program to find the best possible places for the queens
@@ -211,7 +233,7 @@ function App() { // This returns HTML code
     <div className="App">
       <header className="buttonContainer">
         <button className="button" onClick={clearBoard}>Clear Board</button>
-        <button className="button" disabled={states.length>0} onClick={findQueens}>Solve!</button>
+        <button className="button" disabled={states.length>0} onClick={solve}>Solve!</button>
         <input className='input' type="number" placeholder="# of Queens" title="Enter number of queens to randomize." onKeyUp={inputEnter}/>
         <button className="button" onClick={randPositions}>Randomize</button>
         {/* <input className='input' type="number" placeholder="Board Size" title="Enter board size." onKeyDown={changeBoardSize}/> */}
