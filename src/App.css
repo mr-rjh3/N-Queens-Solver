@@ -177,6 +177,7 @@ input::-webkit-outer-spin-button {
 .square p{
   font-size: calc(30vh/var(--boardSize));
   font-family: 'Roboto', sans-serif;
+  font-weight: bold;
   transition: all 0.1s ease;
 }
 

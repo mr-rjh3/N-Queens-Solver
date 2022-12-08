@@ -22,7 +22,7 @@ function Board (props) { // This is a class that extends the React.Component cla
     // when the board size gets updated
     useEffect(() => {
         // change the board size in css :root
-        console.log("BOARD SIZE: ", boardSize);
+        // console.log("BOARD SIZE: ", boardSize);
         var root = document.querySelector(':root');
         root.style.setProperty('--boardSize', boardSize);
         // clear the board
@@ -30,39 +30,6 @@ function Board (props) { // This is a class that extends the React.Component cla
         clearBoard();
     }, [boardSize]);
     
-
-
-// {x: 2, conflicts: [10, 11, 13, 5, 3, 1, 0]}, // min conflicts of column 1 
-                // states = [
-                    // [
-                //     null,
-                //     1,
-                //     null,
-                //     5,
-                //     null,
-                //     null,
-                //     2,
-                //     null,
-                //  ],
-                //  [
-                //     [0, 1, 2, 3, 4, 5, 6, 7],
-                //     1,
-                //     null,
-                //     5,
-                //     null,
-                //     null,
-                //     2,
-                //     null,
-                // ],
-                //     4,
-                //     1,
-                //     null,
-                //     5,
-                //     null,
-                //     null,
-                //     2,
-                //     null,
-                // 
     const nextState = (event) => {
         // from the states array, get the current state          
         // clear the board
@@ -72,43 +39,43 @@ function Board (props) { // This is a class that extends the React.Component cla
         while(collection.length > 0)
         collection[0].classList.remove("hasQueen");
         // get all the squares
-        console.log("states: ", states);
+        // console.log("states: ", states);
     }
     const prevState = (event) => {
         setCurrState(currState - 1);
-        console.log("CURR STATE: ", currState);
+        // console.log("CURR STATE: ", currState);
         const collection = document.getElementsByClassName("hasQueen");
         while(collection.length > 0)
             collection[0].classList.remove("hasQueen");
         // get all the squares
-        console.log("states: ", states);
-        console.log("CURR STATE: ", currState);
+        // console.log("states: ", states);
+        // console.log("CURR STATE: ", currState);
     }
     const lastState = (event) => {
         setCurrState(states.length-1);
-        console.log("CURR STATE: ", currState);
+        // console.log("CURR STATE: ", currState);
         const collection = document.getElementsByClassName("hasQueen");
         while(collection.length > 0)
             collection[0].classList.remove("hasQueen");
         // get all the squares
-        console.log("states: ", states);
+        // console.log("states: ", states);
     }
     const firstState = (event) => {
         setCurrState(0);
-        console.log("MIN STATE");
-        console.log("EVENT: ", event.target);
-        console.log("CURR STATE: ", currState);
+        // console.log("MIN STATE");
+        // console.log("EVENT: ", event.target);
+        // console.log("CURR STATE: ", currState);
         const collection = document.getElementsByClassName("hasQueen");
         while(collection.length > 0)
             collection[0].classList.remove("hasQueen");
         // get all the squares
-        console.log("states: ", states);
+        // console.log("states: ", states);
     }
     const changeState = (event) => {
-        console.log("CURR STATE: ", currState);
-        console.log("states: ", states.length);
+        // console.log("CURR STATE: ", currState);
+        // console.log("states: ", states.length);
         const squares = document.getElementsByClassName("square");
-        console.log("State: ", states[currState]);
+        // console.log("State: ", states[currState]);
         // clear any text on the squares
         for(let i = 0; i < squares.length; i++) {
             squares[i].querySelector('.conflict').innerText = "";
@@ -117,12 +84,12 @@ function Board (props) { // This is a class that extends the React.Component cla
         for(let i = 0; i < states[currState].length; i++) {
             if(states[currState][i] != null) {
                 if(typeof states[currState][i] == "number") { // if the element is a number, then draw the queen on the square in ith column
-                    console.log("NUMBER: ", states[currState][i]);
+                    // console.log("NUMBER: ", states[currState][i]);
                     // TODO: Squares useState "hasQueen" is not updated
                     squares[states[currState][i] * boardSize + i].classList.add("hasQueen");
                 }
                 else{ // if the element is an array, draw all the confilct numbers on the squares in the ith column
-                    console.log("ARRAY: ", states[currState][i]);
+                    // console.log("ARRAY: ", states[currState][i]);
                     for(let j = 0; j < states[currState][i].length; j++) {
                         if(states[currState][i][j] != null){
                             console.log(i+(boardSize*j));
@@ -141,13 +108,13 @@ function Board (props) { // This is a class that extends the React.Component cla
     
     const changeBoardSize = (event) => {
         if((event.key === "Enter" && event.target.value > 0 && event.target.value <= 100)) {
-            console.log(event.target.className);
-            console.log("ENTER PRESSED");
+            // console.log(event.target.className);
+            // console.log("ENTER PRESSED");
             setBoardSize(event.target.value);
             
         }
         else if((event.target.className === "button" && event.target.parentNode.childNodes[0].value > 0 && event.target.parentNode.childNodes[0].value <= 100)){
-            console.log("BUTTON PRESSED");
+            // console.log("BUTTON PRESSED");
             setBoardSize(event.target.parentNode.childNodes[0].value);
         }
         // TODO: allow larger boards to be entered but do not change the visual board size it will only be used for the backend (display a message saying the board is too large)

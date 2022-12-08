@@ -1,13 +1,13 @@
 import { Queen } from "./queen"
 export default class CSP {
-  constructor (queenPositions=null, boardSize=10) {
-    console.log("CSP: ", queenPositions);
+  constructor (queenPositions=null, boardSize=8) {
+    // console.log("CSP: ", queenPositions);
 
     this.queens = [];
     this.conflicts = [];
     this.maxSteps = boardSize*boardSize*boardSize;
 
-    console.log("CSP: CHECK BOARD QUEENS: ");
+    // console.log("CSP: CHECK BOARD QUEENS: ");
     var visitedColumns = [];
     if (queenPositions && queenPositions.length > 0) {
       queenPositions.forEach((position) => {
@@ -21,17 +21,17 @@ export default class CSP {
       });
       
       if (isDuplicate) {
-        throw new Error("Duplicate columns");
+        throw new Error("There are conflicts in the initial board (duplicate columns)");
       }
     }
 
     for (let queen of this.queens) {
       var conflicts = this.getConflicts(queen);
-      if (conflicts[queen.y] > 0) throw new Error("There are conflicts in the initial board");
+      if (conflicts[queen.y] > 0) throw new Error("There are conflicts in the initial board (Row / Diagonal)");
     }
     
     // assign the remaining queens to columns
-    console.log("CSP: ASSIGN QUEENS TO COLUMNS: ");
+    // console.log("CSP: ASSIGN QUEENS TO COLUMNS: ");
     for (let i = 0; i < boardSize; i++) {
       if (!visitedColumns.includes(i)) {
         this.queens.push(new Queen({x: i, y: null,}, boardSize, false));
@@ -39,8 +39,7 @@ export default class CSP {
     }
     
     // revize the domain of all assumed queens
-    // TODO breaks with queens
-    console.log("CSP: REVISE DOMAIN ");
+    // console.log("CSP: REVISE DOMAIN ");
     let valueRevized = true;
     while (valueRevized) {
       valueRevized = false;
@@ -48,7 +47,7 @@ export default class CSP {
       for(let i = 0; i < queenPositions.length; i++) {
         for(let j = 0; j < this.queens.length; j++) {
           valueRevized = this.queens[j].reviseDomain(queenPositions[i]);
-          console.log("CSP: REVISE DOMAIN WHILE LOOP : ", i, j, valueRevized);
+          // console.log("CSP: REVISE DOMAIN WHILE LOOP : ", i, j, valueRevized);
 
           if (valueRevized) {
             break;
@@ -62,21 +61,10 @@ export default class CSP {
     }
   }
 
-  // Assigns a random value to each non-static queen
-  // assignRandomValue(queen) {
-  //   console.log("CSP: ASSIGN RANDOM VALUE: ", queen);
-  //   let domain = queen.domain;
-  //   let randomIndex = Math.floor(Math.random() * domain.length);
-  //   queen.assignValue(1);
-  // }
-
-
   solve() {
     var newQueens = [...this.queens];
-    console.log("CSP: ASSIGNING QUEENS: ");
     for(const queen of newQueens) {
       // randomize the value of the queen
-      console.log("CSP: QUEENS BEFORE FOR: ",queen);
       if (!queen.static) {
         // get a random value from the domain
         let setBits = [];
@@ -85,18 +73,10 @@ export default class CSP {
             setBits.push(i);
           }
         }
-
         // get a random value from the domain
         let randomIndex = Math.floor(Math.random() * setBits.length);
-        console.log("CSP: QUEENS RANDOM INDEX: ", randomIndex, setBits.length);
-
         queen.assignValue(setBits[randomIndex]);
       }
-    }
-
-
-    for(const queen of newQueens) {
-      console.log("CSP: QUEENS ASSIGNED AFTER FOR: ",queen);
     }
 
     // sort the queens left to right for simplicity
@@ -111,39 +91,33 @@ export default class CSP {
     
     // min conflicts algorithm
     var states = [this.getState()];
+    
     for (let i = 0; i < this.maxSteps; i++) {
-      console.log("CSP: SOLVING: ", i, " of ", this.maxSteps, " steps");   
   
       var {queen, conflicts, solved} = this.selectQueen();
       states.push(this.getState(queen, conflicts));
       if (solved) {
-        // states.push(this.getState(queen));
         return {states: states, solved: solved};
       }
-      console.log("SAMSON REPLACE: SELECTED QUEEN FROM ", queen, conflicts);
-      conflicts[queen.y] = queen.boardSize + 1;
+      conflicts[queen.y] = queen.boardSize + 1; // set the queen's conflicts value to the max so the queen is forced to move
       var minConflictIndex = this.minConflicts(conflicts);
-      console.log("SAMSON REPLACE: SELECTED QUEEN TO ", minConflictIndex);
 
-      queen.y = minConflictIndex; // COULD EXPLODE
-      console.log(states);
+      queen.y = minConflictIndex;
     }
-
-    return {states: states, solved: this.isSolved()}; // TODO CHECK IF RAN OUT OF STEPS
+    return {states: states, solved: solved};
   }
 
   selectQueen() {
     // select a conflicting queen randomly
     
     var unvisitedQueens = [...this.queens];
-    console.log("CSP: SELECTING QUEEN ", unvisitedQueens.length, this.queens.length);
+    // console.log("CSP: SELECTING QUEEN ", unvisitedQueens.length, this.queens.length);
     var randVal = Math.floor(Math.random() * unvisitedQueens.length);
     var queen = unvisitedQueens[randVal];
     unvisitedQueens.splice(randVal, 1);
-
     var conflicts = this.getConflicts(queen);
     var solved = false;
-    console.log('currentqueensconflics:',conflicts[queen.y])
+    // console.log('currentqueensconflics:',conflicts[queen.y])
     while (queen.static || conflicts[queen.y] === 0) {
       randVal = Math.floor(Math.random() * unvisitedQueens.length);
       queen = unvisitedQueens[randVal];
@@ -160,6 +134,7 @@ export default class CSP {
     return {queen: queen, conflicts: conflicts, solved: solved};
   }
 
+
   isSolved() {
     var totalConflicts = 0;
     for (let i = 0; i < this.queens.length; i++) {
@@ -173,7 +148,7 @@ export default class CSP {
     var minIndex = 0;
     for (let i = 0; i < conflicts.length; i++) {
       if (conflicts[i] < minConflict) {
-        console.log('SAMSON SETTING MIN TO ', minIndex, minConflict);
+        // console.log('SAMSON SETTING MIN TO ', minIndex, minConflict);
         minConflict = conflicts[i];
         minIndex = i;
       }
@@ -194,7 +169,7 @@ export default class CSP {
           continue;
         }
 
-        if (this.queens[q].y == j) { // in same row
+        if (this.queens[q].y === j) { // in same row
           if (this.queens[q].x !== queen.x) { // if not the same queen
             if (this.queens[q].x < queen.x) {
               if (!rows.left) {
@@ -232,17 +207,17 @@ export default class CSP {
       }
       conflicts.push(conflict);
     }
-    console.log("SAM: CONFLICTS: ", conflicts)
+    // console.log("SAM: CONFLICTS: ", conflicts)
     return conflicts;
   }
 
   getState(masterQueen=null, conflicts=null) {
     // get the state of the board
     if (conflicts) var conf = [...conflicts];
-    console.log("fuck", masterQueen, conflicts);
+    // console.log("not a curse :)", masterQueen, conflicts);
     var state = [];
     for(const queen of this.queens) {
-      console.log("CSP: QUEEN IN STATE: ", queen.y);
+      // console.log("CSP: QUEEN IN STATE: ", queen.y);
       if (masterQueen && queen === masterQueen && conf) {
         conf[queen.y] = null;
         state.push(conf);

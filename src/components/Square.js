@@ -8,7 +8,7 @@ function Square(props) {
 
     // after user clicks on a square
     useEffect(() => {
-        console.log("SQUARE: ", props.id, hasQueen);
+        // console.log("SQUARE: ", props.id, hasQueen);
     }, [hasQueen]);
 
     const squareClick = (event) => {

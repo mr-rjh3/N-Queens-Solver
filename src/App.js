@@ -5,8 +5,6 @@ import { useState, useEffect} from 'react';
 import React from 'react';
 import CSP from './backend/csp.js';
 
-const ThemeContext = React.createContext('light');
-
 function App() { // This returns HTML code
         const [boardSize, setBoardSize] = useState(8); // This is a hook that allows us to use state in a functional component
         const [buttonsEnabled, setButtonsEnabled] = useState(true);
@@ -15,22 +13,22 @@ function App() { // This returns HTML code
 
         useEffect(() => {
           if(states.length <= 0) {
-            console.log("NO STATES FOUND");
+            // console.log("NO STATES FOUND");
           }
           else {
             const squares = document.getElementsByClassName("square");
             for(let i = 0; i < states[0].length; i++) {
               if(states[0][i] != null) {
                   if(typeof states[0][i] == "number") { // if the element is a number, then draw the queen on the square in ith column
-                      console.log("NUMBER: ", states[0][i]);
+                      // console.log("NUMBER: ", states[0][i]);
                       // TODO: Squares useState "hasQueen" is not updated
                       squares[states[0][i] * boardSize + i].classList.add("hasQueen");
                   }
                   else{ // if the element is an array, draw all the confilct numbers on the squares in the ith column
-                      console.log("ARRAY: ", states[0][i]);
+                      // console.log("ARRAY: ", states[0][i]);
                       for(let j = 0; j < states[0][i].length; j++) {
                           if(states[0][i][j] != null){
-                              console.log(i+(boardSize*j));
+                              // console.log(i+(boardSize*j));
                               squares[i+(boardSize*j)].querySelector('.conflict').innerText = states[0][i][j];
                           }
                           else{
@@ -43,30 +41,6 @@ function App() { // This returns HTML code
           }
           }
         }, [states]);
-
-
-        
-        // array of the states of the squares for when we solve it
-        // array of states [
-        //   state 1 
-        //     [
-        //       3,                        // queen is at position 3 in col 1
-        //       [10, 11, 13, 5, 3, 1, 0], // no queen, array min conflicts of column 2 
-        //       4,                        // queen is at position 4 in col 3
-        //       [10, 11, 13, 5, 3, 1, 0], // no queen, array of min conflicts of column 4
-        //       ...
-        //     ]
-        //   ,
-        //   state 2 [...],
-        //   ...
-        // ]
-
-        const disableArrows = (event) => {
-          setButtonsEnabled(false);
-        }
-        const enableArrows = (event) => {
-            setButtonsEnabled(true);
-        }
         
         const solve = () => {
           // Find all the queens
@@ -76,79 +50,36 @@ function App() { // This returns HTML code
 
           const queenPositions = [];
           if(collection.length === 0) {
-            console.log("NO QUEENS FOUND: ", collection.length);
+            // console.log("NO QUEENS FOUND: ", collection.length);
           }
           else{
             // Find all the queens and their positions  
             for (let i = 0; i < collection.length; i++) {
               let x = collection[i].id % boardSize;
               let y = Math.floor(collection[i].id / boardSize);
-              console.log("FOUND QUEEN AT: ", x, y);
+              // console.log("FOUND QUEEN AT: ", x, y);
               queenPositions.push({x: x, y: y});
               collection[i].firstChild.style.opacity = "0.6";
             }
-            enableArrows();
           }
-          // TODO: Run the backend code that solves the n-queens problem here
-          // setStates(getStates(queenPositions));
-          // console.log("STATES: ", states);
-          console.log("APP: Queen positions: ", queenPositions);
 
           try {
             const csp = new CSP(queenPositions, boardSize);
             var {states, solved} = csp.solve();
-            console.log('endsolve', solved)
-            if (!solved) alert("FATUIGED");
+            if (!solved) alert("Maximum Steps Reached, No Solution Found");
             setStates(states);
           } catch (error) {
             console.log(error);
             alert(error);
           }
-          console.log("APP: BEFORE MIN CONFLICTS: ");
-
-
-          // populate the states array with random values based on the board size
-          // let tempStates = [];
-          // for (let i = 0; i < 10; i++) { // amount of states
-          //   let tempState = [];
-          //   for (let j = 0; j < boardSize; j++) {
-          //     // randomly choose to do an array of length boardSize or just a number
-          //     if(Math.random() > 0.9) {
-          //       let tempArray = [];
-          //       for (let k = 0; k < boardSize; k++) {
-          //         tempArray.push(Math.floor(Math.random() * boardSize));
-          //       }
-          //       tempState.push(tempArray);
-          //     }
-          //     else{
-          //       if(Math.random() > 0.5)
-          //         tempState.push(Math.floor(Math.random() * boardSize));
-          //     }
-          //   }
-          //   tempStates.push(tempState);
-          // }
-
-          // setStates([[null, null, null, null, null, null, null, null]
-          //            ,[0, [10,3,0,null,0,0,4,10], null, null, 7, null, null, 1]
-          //           ,[null, 1, null, 3, null, 1, null, null]
-          //           ,[null, null, 2, null, null, [10,3,0,17,0,0,4,10], null, 3]
-          //           ,[null, null, null, 3, null, null, null, null]  
-          //           ,[null, [10,3,0,17,0,0,4,10], null, null, 4, null, 4, null]  
-          //           ,[null, null, null, null, null, 5, null, null]  
-          //           ,[[10,3,0,17,0,0,4,10], null, null, null, null, null, 6, null]  
-          //           ,[null, null, null, null, null, 5, null, 7]  
-          //           ]);
-          // setStates(tempStates);
-
-         
         }
         
         const clearBoard = () => {
           // Clear the board of queens and any text 
           const queens = document.getElementsByClassName("hasQueen");
-          console.log("QUEENS: ", queens);
+          // console.log("QUEENS: ", queens);
           while (queens.length > 0) {
-            console.log("CLEARING QUEEN: ", queens[0]);
+            // console.log("CLEARING QUEEN: ", queens[0]);
             queens[0].firstChild.style.opacity = "0";
             queens[0].classList.remove("hasQueen");
           }
@@ -163,9 +94,9 @@ function App() { // This returns HTML code
           // Clear the states array
           // Clear the board of queens and any text 
           const queens = document.getElementsByClassName("hasQueen");
-          console.log("QUEENS: ", queens);
+          // console.log("QUEENS: ", queens);
           for(let i = 0; i < queens.length; i++) {
-            console.log("CLEARING QUEEN: ", queens[0]);
+            // console.log("CLEARING QUEEN: ", queens[0]);
             queens[i].firstChild.style.opacity = "0";
           }
           const text = document.getElementsByClassName("conflict");
@@ -178,7 +109,7 @@ function App() { // This returns HTML code
 
         const inputEnter = (event) => {
           if(event.key === "Enter") {
-            console.log("ENTER PRESSED");
+            // console.log("ENTER PRESSED");
             randPositions();
           }
         }
@@ -188,7 +119,7 @@ function App() { // This returns HTML code
           const queens = document.getElementsByClassName("input")[0].value;
           const queenSquares = document.getElementsByClassName("hasQueen").length;
 
-          console.log("RANDBOARD: ", boardSize);
+          // console.log("RANDBOARD: ", boardSize);
           // check if there is an input or if there are queens on the board currently, if there is an input we must make sure the input is not greater than the size of the board
           if((queens > 0 || queenSquares > 0) && queens <= boardSize * boardSize) {
             clearBoard();
@@ -196,7 +127,7 @@ function App() { // This returns HTML code
             const numSet = new Set();
             // if there are queens on the board and the user didn't enter a number randomize those queens
             if(queenSquares > 0 && queens === "") { 
-              console.log("NO INPUT RANDOMIZING BOARD");
+              // console.log("NO INPUT RANDOMIZING BOARD");
 
               while(numSet.size < queenSquares) {
                 numSet.add(Math.floor(Math.random() * (boardSize * boardSize)));
@@ -204,14 +135,14 @@ function App() { // This returns HTML code
             }
             // otherwise randomize the number of queens the user entered
             else if(queens > 0) { 
-              console.log("INPUT RANDOMIZING ", queens, " QUEENS");
+              // console.log("INPUT RANDOMIZING ", queens, " QUEENS");
               while(numSet.size < queens) {
                 numSet.add(Math.floor(Math.random() * (boardSize * boardSize)));
               }
             }
             const nums = Array.from(numSet);
             // console.log(nums.length);
-            console.log("RANDS: ", nums);
+            // console.log("RANDS: ", nums);
             for (let i = 0; i < nums.length; i++) {
                 squares[nums[i]].click();
             }
