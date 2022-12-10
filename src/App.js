@@ -67,6 +67,7 @@ function App() { // This returns HTML code
             const csp = new CSP(queenPositions, boardSize);
             var {states, solved} = csp.solve();
             if (!solved) alert("Maximum Steps Reached, No Solution Found");
+            console.log("STATES: ", states.length);
             setStates(states);
           } catch (error) {
             console.log(error);

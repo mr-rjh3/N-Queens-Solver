@@ -30,7 +30,7 @@
   grid-gap: 0.3rem;
   padding: 0.3rem;
 }
-
+/* ARROW BUTTONS */
 .maxLeft button,
 .maxRight button,
 .leftArrow button,
@@ -97,7 +97,6 @@
   margin: auto;
 }
 
-
 .board {
   padding: 0.3rem;
   display: grid;
@@ -116,6 +115,7 @@
   
 }
 
+/* INPUTS */
 input {
   font-size: 1.3rem;
   padding: 0.3rem;
@@ -138,6 +138,7 @@ input::-webkit-outer-spin-button {
   scale: 1.01;
 }
 
+/* BUTTONS */
 .button{
   cursor: pointer;
   background-color: var(--black);
@@ -165,6 +166,7 @@ input::-webkit-outer-spin-button {
 
 }
 
+/* SQUARES */
 .square {
   cursor: pointer;
   position: relative;
@@ -180,7 +182,6 @@ input::-webkit-outer-spin-button {
   font-weight: bold;
   transition: all 0.1s ease;
 }
-
 .square:hover {
   /* border: 2px solid rgb(34, 34, 34); */
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -214,7 +215,6 @@ input::-webkit-outer-spin-button {
   scale: 1;
   transition: all 0.2s ease;
 }
-
 .highlight{
   position: absolute;
   top: 0;

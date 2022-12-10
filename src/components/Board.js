@@ -92,7 +92,7 @@ function Board (props) { // This is a class that extends the React.Component cla
                     // console.log("ARRAY: ", states[currState][i]);
                     for(let j = 0; j < states[currState][i].length; j++) {
                         if(states[currState][i][j] != null){
-                            console.log(i+(boardSize*j));
+                            // console.log(i+(boardSize*j));
                             squares[i+(boardSize*j)].querySelector('.conflict').innerText = states[currState][i][j];
                         }
                         else{

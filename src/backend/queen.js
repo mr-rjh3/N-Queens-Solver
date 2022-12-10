@@ -56,7 +56,7 @@ export class Queen {
 
   assignValue(i) {
     this.y = i;
-    console.log("CSP: ASSIGN RANDOM VALUE: ", this);
+    // console.log("CSP: ASSIGN RANDOM VALUE: ", this);
   } 
   setBit(bit) {
     this.domain |= (1<<bit);
