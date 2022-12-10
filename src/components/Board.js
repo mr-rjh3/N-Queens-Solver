@@ -22,82 +22,52 @@ function Board (props) { // This is a class that extends the React.Component cla
     // when the board size gets updated
     useEffect(() => {
         // change the board size in css :root
-        // console.log("BOARD SIZE: ", boardSize);
         var root = document.querySelector(':root');
         root.style.setProperty('--boardSize', boardSize);
-        // clear the board
+        // clear the board and states
         clearStates();
         clearBoard();
     }, [boardSize]);
     
-    const nextState = (event) => {
-        // from the states array, get the current state          
-        // clear the board
-        // wait for the state to update
-        setCurrState(currState + 1); 
-        const collection = document.getElementsByClassName("hasQueen");
-        while(collection.length > 0)
-        collection[0].classList.remove("hasQueen");
-        // get all the squares
-        // console.log("states: ", states);
+    const firstState = (event) => {
+        // Update board to first state
+        setCurrState(0);
     }
     const prevState = (event) => {
+        // Update board to prev state
         setCurrState(currState - 1);
-        // console.log("CURR STATE: ", currState);
-        const collection = document.getElementsByClassName("hasQueen");
-        while(collection.length > 0)
-            collection[0].classList.remove("hasQueen");
-        // get all the squares
-        // console.log("states: ", states);
-        // console.log("CURR STATE: ", currState);
+    }
+    const nextState = (event) => {
+        // Update board to next state
+        setCurrState(currState + 1); 
     }
     const lastState = (event) => {
+        // Update board to last state
         setCurrState(states.length-1);
-        // console.log("CURR STATE: ", currState);
-        const collection = document.getElementsByClassName("hasQueen");
-        while(collection.length > 0)
-            collection[0].classList.remove("hasQueen");
-        // get all the squares
-        // console.log("states: ", states);
-    }
-    const firstState = (event) => {
-        setCurrState(0);
-        // console.log("MIN STATE");
-        // console.log("EVENT: ", event.target);
-        // console.log("CURR STATE: ", currState);
-        const collection = document.getElementsByClassName("hasQueen");
-        while(collection.length > 0)
-            collection[0].classList.remove("hasQueen");
-        // get all the squares
-        // console.log("states: ", states);
     }
     const changeState = (event) => {
-        // console.log("CURR STATE: ", currState);
-        // console.log("states: ", states.length);
         const squares = document.getElementsByClassName("square");
-        // console.log("State: ", states[currState]);
-        // clear any text on the squares
         for(let i = 0; i < squares.length; i++) {
             squares[i].querySelector('.conflict').innerText = "";
         }
+        const queens = document.getElementsByClassName("hasQueen");
+        while(queens.length > 0)
+            queens[0].classList.remove("hasQueen");
+        // clear any text on the squares
 
         for(let i = 0; i < states[currState].length; i++) {
             if(states[currState][i] != null) {
                 if(typeof states[currState][i] == "number") { // if the element is a number, then draw the queen on the square in ith column
-                    // console.log("NUMBER: ", states[currState][i]);
                     // TODO: Squares useState "hasQueen" is not updated
                     squares[states[currState][i] * boardSize + i].classList.add("hasQueen");
                 }
                 else{ // if the element is an array, draw all the confilct numbers on the squares in the ith column
-                    // console.log("ARRAY: ", states[currState][i]);
                     for(let j = 0; j < states[currState][i].length; j++) {
                         if(states[currState][i][j] != null){
-                            // console.log(i+(boardSize*j));
                             squares[i+(boardSize*j)].querySelector('.conflict').innerText = states[currState][i][j];
                         }
                         else{
                             squares[i+(boardSize*j)].classList.add("hasQueen");
-
                         }
                     }
                 }
@@ -148,7 +118,7 @@ function Board (props) { // This is a class that extends the React.Component cla
 
     return (
         <div className="boardContainer">
-            <div className="input">
+            <div className="boardButtons">
                 <input type="number" placeholder="Board Size" title="Enter board size." onKeyUp={changeBoardSize}/>
                 <button className="button" onClick={changeBoardSize}>Change Board Size</button>
             </div>

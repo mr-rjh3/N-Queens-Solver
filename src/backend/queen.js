@@ -44,7 +44,7 @@ export class Queen {
 
     // check if the domain is empty
     if (this.domain == 0) {
-      throw new Error("Domain is empty");
+      throw new Error("No solution (A queen has no domain)");
     } else if (this.domain & this.domain-1 == 0) {
       this.y = Math.log2(this.domain);
       return true;

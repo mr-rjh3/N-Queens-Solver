@@ -5,7 +5,7 @@ export default class CSP {
 
     this.queens = [];
     this.conflicts = [];
-    this.maxSteps = boardSize*boardSize*boardSize;
+    this.maxSteps = boardSize*2;
 
     // console.log("CSP: CHECK BOARD QUEENS: ");
     var visitedColumns = [];
@@ -43,17 +43,13 @@ export default class CSP {
     let valueRevized = true;
     while (valueRevized) {
       valueRevized = false;
-      // console.log("CSP: Queen positions: ", queenPositions);
       for(let i = 0; i < queenPositions.length; i++) {
         for(let j = 0; j < this.queens.length; j++) {
           valueRevized = this.queens[j].reviseDomain(queenPositions[i]);
-          // console.log("CSP: REVISE DOMAIN WHILE LOOP : ", i, j, valueRevized);
-
           if (valueRevized) {
             break;
           } 
         }
-
         if (valueRevized) {
           break;
         }
@@ -61,32 +57,13 @@ export default class CSP {
     }
   }
 
-  solve() {
-    var newQueens = [...this.queens];
-    for(const queen of newQueens) {
-      // Set the value of the queen
-      if (!queen.static) {
-        // get a random value from the domain
-        let setBits = [];
-        for (let i = 0; i < queen.boardSize; i++) {
-          if (queen.domain & (1<<i)) {
-            setBits.push(i);
-          }
-        }
-        // get the best spot to place the queen (the one with the least conflicts)
-        var minConflictIndex = null; // set the min conflict index to null
-        for (let i = 0; i < setBits.length; i++) { // loop through the set bits in the domain
-          let conflicts = this.getConflicts(queen, setBits[i]); // get the conflicts for the current queen
-          minConflictIndex = this.minConflicts(conflicts); // get the index of the square with the least conflicts
-        }
-        queen.assignValue(minConflictIndex);
-
-        // get a random value from the domain
-        // let randomIndex = Math.floor(Math.random() * setBits.length);
-        // queen.assignValue(setBits[randomIndex]);
-      }
-    }
-
+  solve(debug=false) {
+    console.log("CSP SOLVE: ASSIGN QUEEN VALUES");
+    // get the time before the solve
+    var startTime = new Date().getTime();
+    // assign values to the queens
+    this.assignQueens();
+    console.log("CSP SOLVE: SORTING QUEENS");
     // sort the queens left to right for simplicity
     this.queens.sort((q1, q2) => {
       if (q1.x < q2.x) {
@@ -96,31 +73,42 @@ export default class CSP {
       }
       return 0;
     });
-    // get the time before the solve
-    var startTime = new Date().getTime();
     // min conflicts algorithm
+    console.log("CSP SOLVE: FINISHED ASSIGNMENT ",(new Date().getTime() - startTime)/1000,"s");
+    console.log("CSP SOLVE: START MIN CONFLICTS ALGORITHM");
     var states = [this.getState()]; // get the initial state
     for (let i = 0; i < this.maxSteps; i++) { // loop until the max steps is reached
-      if(i % 100000 === 0) console.log("CSP: ", i, this.maxSteps, (new Date().getTime() - startTime)/1000,"s");
-      var {queen, conflicts, solved} = this.selectQueen(); // select a queen with conflicts O(n) + O(n^2)
-      states.push(this.getState(queen, conflicts)); // get the current state of the board for the front end O(n)
+      if(debug && i % 100 === 0) console.log("CSP: ", i, this.maxSteps, (new Date().getTime() - startTime)/1000,"s");
+      var {queen, conflicts, solved} = this.selectQueen(); // select a queen with conflicts O(n) * O(n^2)
+      if(!debug) states.push(this.getState(queen, conflicts)); // get the current state of the board for the front end O(n)
       if (solved) { // if the board is solved, return the states
-        console.log("CSP TIME TAKEN: ", (new Date().getTime() - startTime)/1000, "s");
+        console.log("CSP SOLVE: SOLVED! TOTAL TIME TAKEN: ", (new Date().getTime() - startTime)/1000, "s");
         return {states: states, solved: solved};
       }
       conflicts[queen.y] = queen.boardSize + 1; // set the queen's conflicts value to the max so the queen is forced to move
       var minConflictIndex = this.minConflicts(conflicts); // get the index of the square with the least conflicts O(n)
       queen.y = minConflictIndex; // move the queen to the square with the least conflicts
     }
-    console.log("CSP TIME TAKEN: ", (new Date().getTime() - startTime)/1000, "s");
+    console.log("CSP SOLVE: FAILED TO SOLVE, TOTAL TIME TAKEN: ", (new Date().getTime() - startTime)/1000, "s");
 
     return {states: states, solved: solved};
   }
-
+  assignQueens() {
+    var newQueens = [...this.queens];
+    // let count = 0;
+    for(const queen of newQueens) { // loop through all the queens and assign them a value
+      // if(count % 10 === 0) console.log("CSP ASSIGNING: ", count, newQueens.length);
+      // count++;
+      // Set the value of the queen
+      if (!queen.static) { // if the queen is not static, aka if it doesn't already have a value assigned
+        var minConflictIndex = null; // set the min conflict index to null
+        var conflicts = this.getConflicts(queen); // get the conflicts for the current queen
+        minConflictIndex = this.minConflicts(conflicts); // get the index of the square with the least conflicts
+        queen.assignValue(minConflictIndex); // assign the least conflicting value to the queen
+      }
+    }
+  }
   selectQueen() {
-    // if (this.isSolved()) { // if the board is solved, return null
-    //   return {queen: null, conflicts: null, solved: true};
-    // }
     var unvisitedQueens = [...this.queens]; // copy the queens array
     var randVal = Math.floor(Math.random() * unvisitedQueens.length); // get a random index
     var queen = unvisitedQueens[randVal]; // get a random queen
@@ -128,12 +116,10 @@ export default class CSP {
     var conflicts = this.getConflicts(queen);
     var solved = false;
     while ((queen.static || conflicts[queen.y] === 0) && unvisitedQueens.length > 0) { // continue selecting queens until a valid queen is found (not static and has conflicts)
-      // console.log("CSP: WHILE QUEEN BEFORE ",queen, unvisitedQueens.length);
       randVal = Math.floor(Math.random() * unvisitedQueens.length);
       queen = unvisitedQueens[randVal];
       unvisitedQueens.splice(randVal, 1);
       conflicts = this.getConflicts(queen);
-      // console.log("CSP: WHILE QUEEN AFTER ",queen, conflicts, unvisitedQueens, this.queens.length);
     }
     if(unvisitedQueens.length <= 0 && conflicts[queen.y] === 0) { // if all of the queens have been visited and there are no conflicts, the board is solved
       solved = true;
@@ -159,10 +145,8 @@ export default class CSP {
   getState(masterQueen=null, conflicts=null) {
     // get the state of the board
     if (conflicts) var conf = [...conflicts];
-    // console.log("not a curse :)", masterQueen, conflicts);
     var state = [];
     for(const queen of this.queens) {
-      // console.log("CSP: QUEEN IN STATE: ", queen.y);
       if (masterQueen && queen === masterQueen && conf) {
         conf[queen.y] = null;
         state.push(conf);
@@ -178,7 +162,6 @@ export default class CSP {
     var minIndex = 0;
     for (let i = 0; i < conflicts.length; i++) {
       if (conflicts[i] <= minConflict) {
-        // console.log('SAMSON SETTING MIN TO ', minIndex, minConflict);
         if(conflicts[i] == minConflict){ // if the conflicts are equal, randomly choose one of the two to prevent the algorithm from getting stuck in a local minimum
           if(Math.random() > 0.5) continue;
         }
@@ -231,12 +214,6 @@ export default class CSP {
       }
       conflicts.push(conflict);
     }
-    // console.log("SAM: CONFLICTS: ", conflicts)
     return conflicts;
-  }
-
-  
+  } 
 }
-
-// make a function that returns an array of all of the conflicting queens minus those that have a domain of 1 value
-// this is the function that is going to have a random queen selected from

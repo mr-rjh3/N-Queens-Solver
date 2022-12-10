@@ -10,7 +10,6 @@ function App() { // This returns HTML code
         const [buttonsEnabled, setButtonsEnabled] = useState(true);
         const [states, setStates] = useState([]);
         const [currState, setCurrState] = useState(0);
-
         useEffect(() => {
           if(states.length <= 0) {
             // console.log("NO STATES FOUND");
@@ -64,10 +63,11 @@ function App() { // This returns HTML code
           }
 
           try {
+            console.log("APP: SOLVING ", boardSize);
             const csp = new CSP(queenPositions, boardSize);
             var {states, solved} = csp.solve();
             if (!solved) alert("Maximum Steps Reached, No Solution Found");
-            console.log("STATES: ", states.length);
+            console.log("APP: STATES: ", states.length, states);
             setStates(states);
           } catch (error) {
             console.log(error);
@@ -93,15 +93,12 @@ function App() { // This returns HTML code
         }
         const clearStates = () => {
           // Clear the states array
-          // Clear the board of queens and any text 
           const queens = document.getElementsByClassName("hasQueen");
-          // console.log("QUEENS: ", queens);
-          for(let i = 0; i < queens.length; i++) {
-            // console.log("CLEARING QUEEN: ", queens[0]);
+          for(let i = 0; i < queens.length; i++) { // Make the red highlight disappear
             queens[i].firstChild.style.opacity = "0";
           }
           const text = document.getElementsByClassName("conflict");
-          for (let i = 0; i < text.length; i++) {
+          for (let i = 0; i < text.length; i++) { // Clear the text
             text[i].innerText = "";
           }
           setStates([]);
@@ -129,8 +126,8 @@ function App() { // This returns HTML code
             // if there are queens on the board and the user didn't enter a number randomize those queens
             if(queenSquares > 0 && queens === "") { 
               // console.log("NO INPUT RANDOMIZING BOARD");
-
               while(numSet.size < queenSquares) {
+                // make sure the random number is not conflicting with the queens already on the board
                 numSet.add(Math.floor(Math.random() * (boardSize * boardSize)));
               }
             }
