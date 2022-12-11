@@ -38,15 +38,17 @@ export class Queen {
     const xDiff = Math.abs(this.x - position.x);
     if (position.y - xDiff >= 0) {
       this.clearBit(position.y - xDiff);
-    } else if (this.y + xDiff < this.boardSize) {
+    } else if (position.y + xDiff < this.boardSize) {
       this.clearBit(position.y + xDiff);
+      console.log("hit2", {'this.x': this.x, 'position.x': position.x, 'position.y': position.y, 'this.y': this.y, 'xDiff': xDiff});
     }
 
     // check if the domain is empty
     if (this.domain == 0) {
-      throw new Error("Domain is empty");
+      throw new Error("No solution (A queen has no domain)");
     } else if (this.domain & this.domain-1 == 0) {
       this.y = Math.log2(this.domain);
+      this.static = true;
       return true;
     }
     
@@ -56,7 +58,7 @@ export class Queen {
 
   assignValue(i) {
     this.y = i;
-    console.log("CSP: ASSIGN RANDOM VALUE: ", this);
+    // console.log("CSP: ASSIGN RANDOM VALUE: ", this);
   } 
   setBit(bit) {
     this.domain |= (1<<bit);
