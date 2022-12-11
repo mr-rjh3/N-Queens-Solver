@@ -21,4 +21,4 @@ Tool that can be used to solve and visualize an N-Queens problem using **CSP Con
   - You may randomize the postitions of the static queens before you solve the board
 
 ## License
-MIT © License can be found [here](https://github.com/SamsonGoodenough/n-puzzle-solver/blob/main/LICENSE).
+MIT © License can be found [here](https://github.com/mr-rjh3/N-Queens-Solver/blob/master/LICENSE.txt).
