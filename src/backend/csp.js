@@ -31,7 +31,7 @@ export default class CSP {
     }
     
     // assign the remaining queens to columns
-    // console.log("CSP: ASSIGN QUEENS TO COLUMNS: ");
+    console.log("CSP: ASSIGN QUEENS TO COLUMNS: ");
     for (let i = 0; i < boardSize; i++) {
       if (!visitedColumns.includes(i)) {
         this.queens.push(new Queen({x: i, y: null,}, boardSize, false));
@@ -61,7 +61,7 @@ export default class CSP {
     // get the time before the solve
     var startTime = new Date().getTime();
     // assign values to the queens
-    this.assignQueens();
+    this.assignQueens(debug);
     console.log("CSP SOLVE: SORTING QUEENS");
     // sort the queens left to right for simplicity
     this.queens.sort((q1, q2) => {
@@ -92,12 +92,12 @@ export default class CSP {
 
     return {states: states, solved: solved};
   }
-  assignQueens() {
+  assignQueens(debug=false) {
     var newQueens = [...this.queens];
-    // let count = 0;
+    let count = 0;
     for(const queen of newQueens) { // loop through all the queens and assign them a value
-      // if(count % 10 === 0) console.log("CSP ASSIGNING: ", count, newQueens.length);
-      // count++;
+      if(debug && count % 10 === 0) console.log("CSP ASSIGNING: ", count, newQueens.length);
+      count++;
       // Set the value of the queen
       if (!queen.static) { // if the queen is not static, aka if it doesn't already have a value assigned
         var minConflictIndex = null; // set the min conflict index to null

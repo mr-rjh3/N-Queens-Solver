@@ -63,11 +63,13 @@ function App() { // This returns HTML code
           }
 
           try {
-            console.log("APP: SOLVING ", boardSize);
+            console.log("APP: CREATING CSP ", boardSize);
             const csp = new CSP(queenPositions, boardSize);
+            console.log("APP: SOLVING ", boardSize);
             var {states, solved} = csp.solve();
             if (!solved) alert("Maximum Steps Reached, No Solution Found");
             console.log("APP: STATES: ", states.length, states);
+            // alert("Solved!!!");
             setStates(states);
           } catch (error) {
             console.log(error);

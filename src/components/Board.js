@@ -99,15 +99,15 @@ function Board (props) { // This is a class that extends the React.Component cla
             for (let j = 0; j < boardSize; j++) {
                 if(i % 2 === 0) {
                     if((j % 2 === 0)) {
-                        board.push(<Square id={count} backgroundColor="var(--white)" hasQueen={false} setStates={setStates} clearStates={clearStates}/>);
+                        board.push(<Square key={count} id={count} backgroundColor="var(--white)" hasQueen={false} setStates={setStates} clearStates={clearStates}/>);
                     } else {
-                        board.push(<Square id={count} backgroundColor="var(--black)" hasQueen={false} setStates={setStates} clearStates={clearStates} />);
+                        board.push(<Square key={count} id={count} backgroundColor="var(--black)" hasQueen={false} setStates={setStates} clearStates={clearStates} />);
                     }
                 } else {
                     if((j % 2 === 0)) {
-                        board.push(<Square id={count} backgroundColor="var(--black)" hasQueen={false} setStates={setStates} clearStates={clearStates} />);
+                        board.push(<Square key={count} id={count} backgroundColor="var(--black)" hasQueen={false} setStates={setStates} clearStates={clearStates} />);
                     } else {
-                        board.push(<Square id={count} backgroundColor="var(--white)" hasQueen={false} setStates={setStates} clearStates={clearStates} />);
+                        board.push(<Square key={count} id={count} backgroundColor="var(--white)" hasQueen={false} setStates={setStates} clearStates={clearStates} />);
                     }
                 }
                 count++;
