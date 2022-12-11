@@ -144,7 +144,7 @@ function App() { // This returns HTML code
             // console.log(nums.length);
             // console.log("RANDS: ", nums);
             for (let i = 0; i < nums.length; i++) {
-                squares[nums[i]].click();
+                squares[nums[i]].classList.add("hasQueen");
             }
           }
         }
