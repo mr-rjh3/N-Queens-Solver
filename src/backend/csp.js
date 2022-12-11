@@ -5,7 +5,7 @@ export default class CSP {
 
     this.queens = [];
     this.conflicts = [];
-    this.maxSteps = boardSize*2;
+    this.maxSteps = boardSize*boardSize;
 
     // console.log("CSP: CHECK BOARD QUEENS: ");
     var visitedColumns = [];
@@ -40,9 +40,8 @@ export default class CSP {
     
     // revize the domain of all assumed queens
     // console.log("CSP: REVISE DOMAIN ");
-    let valueRevized = true;
-    while (valueRevized) {
-      valueRevized = false;
+    let valueRevized = false;
+    do {
       for(let i = 0; i < queenPositions.length; i++) {
         for(let j = 0; j < this.queens.length; j++) {
           valueRevized = this.queens[j].reviseDomain(queenPositions[i]);
@@ -54,7 +53,7 @@ export default class CSP {
           break;
         }
       }
-    }
+    } while (valueRevized);
   }
 
   solve(debug=false) {
